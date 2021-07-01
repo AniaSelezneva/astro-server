@@ -1,11 +1,8 @@
 require("dotenv").config({ path: __dirname + "/.env" });
 const express = require("express");
-const path = require("path");
-const PORT = process.env.PORT || 5000;
 const cors = require("cors");
 const webpush = require("web-push");
 const { Client } = require("pg");
-const { urlencoded } = require("express");
 
 const app = express();
 
@@ -13,18 +10,18 @@ app.use(cors());
 // get access to req.body
 app.use(express.json());
 
-const client = new Client({
-  connectionString: `${process.env.DATABASE_URL}`,
-  ssl: {
-    rejectUnauthorized: false,
-  },
-});
-
-client.connect();
-
 // Subscribe user to notifications (send info to the db)
 app.post("/subscribe", async (req, res) => {
   const { endpoint, p256dh, auth } = req.body;
+
+  const client = new Client({
+    connectionString: `${process.env.DATABASE_URL}`,
+    ssl: {
+      rejectUnauthorized: false,
+    },
+  });
+
+  client.connect();
 
   // Add an entry to a db
   client.query(
@@ -34,7 +31,7 @@ app.post("/subscribe", async (req, res) => {
       for (let row of res.rows) {
         console.log(JSON.stringify(row));
       }
-      //client.end();
+      client.end();
     }
   );
 
@@ -52,8 +49,14 @@ app.post("/push", async (req, res) => {
   client.query(`SELECT * FROM subscriptions;`, async (err, res) => {
     if (err) throw err;
     for await (let row of res.rows) {
-      //console.log(JSON.stringify(row));
-      console.log(message, title);
+      const client = new Client({
+        connectionString: `${process.env.DATABASE_URL}`,
+        ssl: {
+          rejectUnauthorized: false,
+        },
+      });
+
+      client.connect();
 
       const subscription = {
         endpoint: row.endpoint,
@@ -83,7 +86,7 @@ app.post("/push", async (req, res) => {
 
       webpush.sendNotification(subscription, JSON.stringify(data));
     }
-    //client.end();
+    client.end();
   });
 });
 
