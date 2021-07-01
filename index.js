@@ -35,7 +35,7 @@ app.post("/subscribe", async (req, res) => {
     }
   );
 
-  res.end();
+  res.status(200).send("Success");
 
   //   CREATE TABLE subscriptions (
   //     id             serial PRIMARY KEY,
@@ -91,7 +91,7 @@ app.post("/push", async (req, res) => {
     client.end();
   });
 
-  res.end();
+  res.status(200).send("Success");
 });
 
 app.listen(5000, () => {
