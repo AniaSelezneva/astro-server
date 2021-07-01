@@ -6,7 +6,7 @@ const { Client } = require("pg");
 
 const app = express();
 
-app.use(cors());
+app.use(cors({ origin: "https://astrobus.herokuapp.com/" }));
 // get access to req.body
 app.use(express.json());
 
@@ -34,6 +34,8 @@ app.post("/subscribe", async (req, res) => {
       client.end();
     }
   );
+
+  res.end();
 
   //   CREATE TABLE subscriptions (
   //     id             serial PRIMARY KEY,
@@ -88,6 +90,8 @@ app.post("/push", async (req, res) => {
     }
     client.end();
   });
+
+  res.end();
 });
 
 app.listen(5000, () => {
