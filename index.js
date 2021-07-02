@@ -6,21 +6,20 @@ const { Client } = require("pg");
 
 const app = express();
 
-app.use(cors());
-// { origin: "https://astrobus.herokuapp.com" }
+app.use(cors({ origin: "https://astrobus.herokuapp.com" }));
 // get access to req.body
 app.use(express.json());
+
+const client = new Client({
+  connectionString: `${process.env.DATABASE_URL}`,
+  ssl: {
+    rejectUnauthorized: false,
+  },
+});
 
 // Subscribe user to notifications (send info to the db)
 app.post("/subscribe", async (req, res) => {
   const { endpoint, p256dh, auth } = req.body;
-
-  const client = new Client({
-    connectionString: `${process.env.DATABASE_URL}`,
-    ssl: {
-      rejectUnauthorized: false,
-    },
-  });
 
   client.connect();
 
@@ -56,18 +55,11 @@ app.post("/subscribe", async (req, res) => {
 app.post("/push", async (req, res) => {
   const { message, title } = req.body;
 
+  client.connect();
+
   client.query(`SELECT * FROM subscriptions;`, async (err, res) => {
     if (err) throw err;
     for await (let row of res.rows) {
-      const client = new Client({
-        connectionString: `${process.env.DATABASE_URL}`,
-        ssl: {
-          rejectUnauthorized: false,
-        },
-      });
-
-      client.connect();
-
       const subscription = {
         endpoint: row.endpoint,
         expirationTime: null,
@@ -96,8 +88,9 @@ app.post("/push", async (req, res) => {
 
       webpush.sendNotification(subscription, JSON.stringify(data));
     }
-    client.end();
   });
+
+  client.end();
 
   res.status(200).send("Success");
 });
