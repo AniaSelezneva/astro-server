@@ -26,6 +26,8 @@ client
 app.post("/subscribe", async (req, res) => {
   const { endpoint, p256dh, auth } = req.body;
 
+  console.log("************************", endpoint);
+
   // Add an entry to a db
   client.query(
     `INSERT INTO subscriptions (id, endpoint, p256dh, auth) VALUES (DEFAULT, '${endpoint}', '${p256dh}', '${auth}');`,
