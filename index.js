@@ -35,7 +35,9 @@ app.post("/subscribe", async (req, res) => {
     }
   );
 
-  response.writeHead(200, { "Access-Control-Allow-Origin": "*" });
+  response.writeHead(200, {
+    "Access-Control-Allow-Origin": "https://astrobus.herokuapp.com",
+  });
 
   //   CREATE TABLE subscriptions (
   //     id             serial PRIMARY KEY,
