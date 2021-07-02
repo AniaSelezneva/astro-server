@@ -6,7 +6,7 @@ const { Client } = require("pg");
 
 const app = express();
 
-app.use(cors({ origin: "https://astrobus.herokuapp.com/" }));
+app.use(cors({ origin: "https://astrobus.herokuapp.com" }));
 // get access to req.body
 app.use(express.json());
 
@@ -35,9 +35,9 @@ app.post("/subscribe", async (req, res) => {
     }
   );
 
-  response.writeHead(200, {
-    "Access-Control-Allow-Origin": "https://astrobus.herokuapp.com",
-  });
+  // response.writeHead(200, {
+  //   "Access-Control-Allow-Origin": "https://astrobus.herokuapp.com",
+  // });
 
   //   CREATE TABLE subscriptions (
   //     id             serial PRIMARY KEY,
