@@ -86,12 +86,15 @@ app.post("/push", async (req, res) => {
         title,
       };
 
-      webpush.sendNotification(subscription, JSON.stringify(data));
+      await webpush.sendNotification(subscription, JSON.stringify(data));
     }
   });
 
   client.end();
 
+  res.set({
+    "Access-Control-Allow-Origin": "https://astrobus.herokuapp.com",
+  });
   res.status(200).send("Success");
 });
 
