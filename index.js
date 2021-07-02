@@ -36,7 +36,7 @@ app.post("/subscribe", async (req, res) => {
   );
 
   response.writeHead(200, {
-    "Access-Control-Allow-Origin": "https://astrobus.herokuapp.com/",
+    "Access-Control-Allow-Origin": "https://astrobus.herokuapp.com",
   });
 
   //   CREATE TABLE subscriptions (
@@ -96,6 +96,6 @@ app.post("/push", async (req, res) => {
   res.status(200).send("Success");
 });
 
-app.listen(process.env.PORT || 5000, () => {
+app.listen(5000, () => {
   console.log("server has started on port 5000");
 });
