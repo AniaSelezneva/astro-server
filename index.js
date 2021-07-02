@@ -35,6 +35,10 @@ app.post("/subscribe", async (req, res) => {
     }
   );
 
+  res.setHeader(
+    "Access-Control-Allow-Origin",
+    "https://astrobus.herokuapp.com/"
+  );
   res.status(200).send("Success");
 
   //   CREATE TABLE subscriptions (
