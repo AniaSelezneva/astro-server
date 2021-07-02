@@ -6,7 +6,7 @@ const { Client } = require("pg");
 
 const app = express();
 
-app.use(cors({ origin: "https://astrobus.herokuapp.com" }));
+app.use(cors({ origin: `${process.env.ALLOWED_ORIGIN}` }));
 // get access to req.body
 app.use(express.json());
 
@@ -35,7 +35,7 @@ app.post("/subscribe", async (req, res) => {
   );
 
   res.set({
-    "Access-Control-Allow-Origin": "https://astrobus.herokuapp.com",
+    "Access-Control-Allow-Origin": `${process.env.ALLOWED_ORIGIN}`,
   });
   res.status(200).send("Success");
 
@@ -49,7 +49,7 @@ app.post("/subscribe", async (req, res) => {
 
 // Send push notifications to subscribed users.
 app.post("/push", async (req, res) => {
-  const { message, title } = req.body;
+  const { message, title, action } = req.body;
 
   client.query(`SELECT * FROM subscriptions;`, async (err, res) => {
     // If can't query the db.
@@ -81,6 +81,7 @@ app.post("/push", async (req, res) => {
         const data = {
           message,
           title,
+          action,
         };
 
         try {
@@ -97,7 +98,7 @@ app.post("/push", async (req, res) => {
   });
 
   res.set({
-    "Access-Control-Allow-Origin": "https://astrobus.herokuapp.com",
+    "Access-Control-Allow-Origin": `${process.env.ALLOWED_ORIGIN}`,
   });
   res.status(200).send("Success");
 });
