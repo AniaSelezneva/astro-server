@@ -36,6 +36,11 @@ app.post("/subscribe", async (req, res) => {
     }
   );
 
+  res.set({
+    "Access-Control-Allow-Origin": "https://astrobus.herokuapp.com",
+  });
+  res.status(200).send("Success");
+
   // response.writeHead(200, {
   //   "Access-Control-Allow-Origin": "https://astrobus.herokuapp.com",
   // });
