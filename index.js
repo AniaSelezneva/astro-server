@@ -17,16 +17,41 @@ const client = new Client({
   },
 });
 
+// client.query(
+//   `   CREATE TABLE questions (
+//     id             serial PRIMARY KEY,
+//     question           text
+// );`,
+//   (err, res) => {
+//     if (err) throw err;
+//   }
+// );
+
 client
   .connect()
   .then(() => console.log("connected"))
   .catch((err) => console.error("connection error", err.stack));
 
+app.post("/ask", async (req, res) => {
+  const { question } = req.body;
+
+  // Add an entry to a db
+  client.query(
+    `INSERT INTO questions (id, question) VALUES (DEFAULT, '${question}');`,
+    (err, res) => {
+      if (err) {
+        res.status(500).send("Error occured");
+        throw err;
+      }
+    }
+  );
+
+  res.status(200).send("Success");
+});
+
 // Subscribe user to notifications (send info to the db).
 app.post("/subscribe", async (req, res) => {
   const { endpoint, p256dh, auth } = req.body;
-
-  console.log("************************", endpoint);
 
   // Add an entry to a db
   client.query(
