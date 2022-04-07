@@ -1,0 +1,7 @@
+heroku db is connected to heroku app
+
+heroku pg:credentials DATABASE - to see the db string
+heroku pg:psql  
+\l
+\c - chooses db to be connected to automatically
+\d - list of relations

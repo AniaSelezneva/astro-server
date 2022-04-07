@@ -3,8 +3,12 @@ const express = require("express");
 const cors = require("cors");
 const webpush = require("web-push");
 const { Client } = require("pg");
+const axios = require("axios");
+const jsdom = require("jsdom");
+const iconv = require("iconv-lite");
 
 const app = express();
+const { JSDOM } = jsdom;
 
 app.use(cors({ origin: `${process.env.ALLOWED_ORIGIN}` }));
 // get access to req.body
@@ -47,6 +51,57 @@ app.post("/ask", async (req, res) => {
   );
 
   res.status(200).send("Success");
+});
+
+// Scraping for weekly horoscope
+app.get("/week", async (req, res) => {
+  const url = process.env.URL;
+  const headers = { nodeList: [], textContent: [] };
+  const texts = { nodeList: [], textContent: [] };
+  const content = []; //{header: string, text: string}
+
+  axios
+    .get(url)
+    .then(function ({ data }) {
+      const dom = new JSDOM(data);
+      const headersNodeList = dom.window.document.querySelectorAll("h2");
+      // Get headers nodelist
+      for (let i = 0; i < 12; i++) {
+        headers.nodeList.push(headersNodeList[i]);
+      }
+      // Get paragraphs nodelist
+      for (let i = 0; i < headers.nodeList.length; i++) {
+        texts.nodeList.push(headers.nodeList[i].nextElementSibling);
+      }
+      // Extract headers text
+      for (let i = 0; i < headers.nodeList.length; i++) {
+        headers.textContent.push(
+          headers.nodeList[i].textContent.trim().replace(/ .*/, "")
+        );
+      }
+      // Extract paragraphs text
+      for (let i = 0; i < texts.nodeList.length; i++) {
+        console.log(texts.nodeList[i].textContent);
+        texts.textContent.push(texts.nodeList[i].textContent);
+      }
+      // Combine header with text
+      for (let i = 0; i < headers.nodeList.length; i++) {
+        const headerPlusText = {
+          header: headers.textContent[i],
+          text: texts.textContent[i],
+        };
+        content.push(headerPlusText);
+      }
+
+      res.status(200).send(content);
+    })
+    .catch(function (error) {
+      // handle error
+      console.log(error);
+    })
+    .then(function () {
+      // always executed
+    });
 });
 
 // Subscribe user to notifications (send info to the db).
