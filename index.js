@@ -39,6 +39,8 @@ client
 app.post("/ask", async (req, res) => {
   const { question } = req.body;
 
+  console.log(question);
+
   // Add an entry to a db
   client.query(
     `INSERT INTO questions (id, question) VALUES (DEFAULT, '${question}');`,
