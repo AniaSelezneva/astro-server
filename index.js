@@ -83,7 +83,7 @@ app.get("/week", async (req, res) => {
       }
       // Extract paragraphs text
       for (let i = 0; i < texts.nodeList.length; i++) {
-        console.log(texts.nodeList[i].textContent);
+        //console.log(texts.nodeList[i].textContent);
         texts.textContent.push(texts.nodeList[i].textContent);
       }
       // Combine header with text
