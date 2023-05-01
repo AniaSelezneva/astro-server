@@ -15,7 +15,7 @@ app.use(cors({ origin: `${process.env.ALLOWED_ORIGIN}` }));
 app.use(express.json());
 
 const client = new Client({
-  connectionString: `${process.env.DATABASE_URL}`,
+  connectionString: `postgresql://postgres:${process.env.DATABASE_PASSWORD}@db.gajjmdmfdazbeephfmtk.supabase.co:5432/postgres`,
   ssl: {
     rejectUnauthorized: false,
   },
@@ -42,17 +42,17 @@ app.post("/ask", async (req, res) => {
   console.log(question);
 
   // Add an entry to a db
-  client.query(
-    `INSERT INTO questions (id, question) VALUES (DEFAULT, '${question}');`,
-    (err, res) => {
-      if (err) {
-        res.status(500).send("Error occured");
-        throw err;
-      }
-    }
-  );
+  // client.query(
+  //   `INSERT INTO questions (id, question) VALUES (DEFAULT, '${question}');`,
+  //   (err, res) => {
+  //     if (err) {
+  //       res.status(500).send("Error occured");
+  //       throw err;
+  //     }
+  //   }
+  // );
 
-  res.status(200).send("Success");
+  // res.status(200).send("Success");
 });
 
 // Scraping for weekly horoscope
